@@ -1,3 +1,4 @@
+//npm 
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
@@ -5,6 +6,7 @@ const router = express.Router();
 const Courses = require("../model/courseModel");
 const checkAuth = require("../middleware/check-auth");
 const multer = require("multer"); 
+//storing images uploaded via api request
 const storage = multer.diskStorage({
     destination: function(req, res, cb){
         cb(null, "./uploads");
@@ -18,6 +20,7 @@ const upload = multer({storage: storage});
 
 app.use(bodyParser.urlencoded({extended:true}));
 
+//post request
 router.post("/", upload.single("imageURL"),checkAuth, async(req,res) =>{
     try {
         
@@ -29,6 +32,7 @@ router.post("/", upload.single("imageURL"),checkAuth, async(req,res) =>{
     }
 });
 
+//Delete request
 router.delete("/" , checkAuth, async(req,res) =>{
     console.log(req.body);
     try {
@@ -43,6 +47,7 @@ router.delete("/" , checkAuth, async(req,res) =>{
 });
 
 
+//get request
 router.get("/",  checkAuth, async(req,res) =>{
     try {
         
@@ -54,7 +59,7 @@ router.get("/",  checkAuth, async(req,res) =>{
     }
 });
 
-
+//Patch request to update
 router.patch("/", checkAuth, async(req,res)=>{
     try {
         let course = await Courses.updateOne(req.params.id,req.body , {new:true})
@@ -64,4 +69,5 @@ router.patch("/", checkAuth, async(req,res)=>{
     }
 });
 
+//connecting with database
 module.exports = router;
