@@ -1,3 +1,4 @@
+//npm
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
@@ -11,8 +12,9 @@ require("dotenv").config();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
+//setting up signup page for authentication
 router.post("/signup", (req, res, next) => {
-    Users.find({ email: req.body.email })
+    Users.find({ email: req.body.email })//checking if the email already exits 
         .exec()
         .then(user => {
             if (user.length >= 1) {
@@ -26,7 +28,7 @@ router.post("/signup", (req, res, next) => {
                             error: err
                         });
                     } else {
-                        const user = new Users({
+                        const user = new Users({//signing up as user is new
                             _id: new mongoose.Types.ObjectId(),
                             email: req.body.email,
                             password: hash
@@ -50,6 +52,7 @@ router.post("/signup", (req, res, next) => {
         });
 });
 
+//Setting up login route
 router.post("/login", (req, res, next) => {
     Users.find({ email: req.body.email })
         .exec()
@@ -66,6 +69,7 @@ router.post("/login", (req, res, next) => {
                     });
                 }
                 if (result) {
+                    //authorisation check
                     const token = jwt.sign({
                         email: user[0].email,
                         userId: user[0]._id
@@ -92,6 +96,7 @@ router.post("/login", (req, res, next) => {
         });
 })
 
+//deleting any user id
 router.delete("/:userId", (req, res, next) => {
     Users.remove({ _id: req.params.id })
         .exec()
